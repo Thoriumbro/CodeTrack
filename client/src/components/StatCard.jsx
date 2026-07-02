@@ -1,6 +1,6 @@
 export default function StatCard({ title, value, color }) {
     return (
-        <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 shadow-lg">
+        <div className="bg-[#161B22] rounded-xl p-6 border border-[#30363D] shadow-lg">
             <h3 className="text-slate-400 text-sm">
                 {title}
             </h3>

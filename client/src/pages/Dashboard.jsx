@@ -10,6 +10,7 @@ export default function Dashboard() {
     const [selectedProblem, setSelectedProblem] = useState(null);
     const [search, setSearch] = useState("");
     const [difficultyFilter, setDifficultyFilter] = useState("All");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchProblems();
@@ -17,10 +18,15 @@ export default function Dashboard() {
 
     const fetchProblems = async () => {
         try {
+            setLoading(true);
+
             const res = await api.get("/problems");
+
             setProblems(res.data);
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -95,15 +101,26 @@ export default function Dashboard() {
         return revisionDate === today;
     });
 
-    return (
-        <div className="min-h-screen bg-slate-950 text-white">
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#0D1117] flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-slate-400">Loading Dashboard...</p>
+                </div>
+            </div>
+        );
+    }
 
-            <header className="border-b border-slate-800">
+    return (
+        <div className="min-h-screen bg-[#0D1117] text-white">
+
+            <header className="border-b border-[#30363D]">
 
                 <div className="max-w-7xl mx-auto flex justify-between items-center p-6">
 
-                    <h1 className="text-3xl font-bold">
-                        Interview Prep Tracker
+                    <h1 className="text-3xl font-bold text-blue-400">
+                        CodeTrack
                     </h1>
 
                     <button
@@ -122,11 +139,17 @@ export default function Dashboard() {
 
             <main className="max-w-7xl mx-auto p-6">
 
-                <h2 className="text-2xl font-semibold mb-8">
-                    Welcome Back 👋
-                </h2>
+                <div className="mb-8">
+                    <h2 className="text-3xl font-bold">
+                        Master Your Coding Interviews 🚀
+                    </h2>
 
-                <div className="mt-8 bg-slate-900 border border-slate-800 rounded-xl p-6">
+                    <p className="text-slate-400 mt-2">
+                        Track your progress, revise smarter, and stay interview-ready.
+                    </p>
+                </div>
+
+                <div className="mt-8 bg-[#161B22] border border-[#30363D] rounded-xl p-6">
 
                     <div className="flex justify-between items-center mb-4">
 
@@ -155,7 +178,7 @@ export default function Dashboard() {
                     <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
 
                         <div
-                            className="bg-blue-500 h-4 transition-all duration-500"
+                            className="bg-emerald-500 h-4 transition-all duration-500"
                             style={{
                                 width: `${progress}%`
                             }}
@@ -165,7 +188,7 @@ export default function Dashboard() {
 
                 </div>
 
-                <div className="mt-8 bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <div className="mt-8 bg-[#161B22] border border-[#30363D] rounded-xl p-6">
 
                 <h2 className="text-xl font-semibold mb-5">
                     📅 Today's Revision Queue
@@ -248,50 +271,75 @@ export default function Dashboard() {
 
                 </div>
 
-                <div className="mt-8 mb-6 flex flex-col md:flex-row gap-4">
-                <input
-                    type="text"
-                    placeholder="🔍 Search problems..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-                />
+                <div className="mt-8 mb-6 flex flex-col lg:flex-row gap-4 justify-between items-center">
 
-                <select
-                    value={difficultyFilter}
-                    onChange={(e) => setDifficultyFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 rounded-lg px-4 py-3"
-                >
-                    <option value="All">All</option>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
+                    <div className="flex flex-col md:flex-row gap-4 w-full">
 
-            </div>
+                        <input
+                            type="text"
+                            placeholder="🔍 Search problems..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="flex-1 bg-[#161B22] border border-slate-700 rounded-lg px-4 py-3 outline-none focus:border-emerald-500"
+                        />
 
-                <div className="flex justify-end mt-8">
+                        <select
+                            value={difficultyFilter}
+                            onChange={(e) => setDifficultyFilter(e.target.value)}
+                            className="bg-[#161B22] border border-slate-700 rounded-lg px-4 py-3"
+                        >
+                            <option value="All">All</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
 
-                <button
-                    onClick={() => {
-                        setSelectedProblem(null);
-                        setOpenModal(true);
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-lg"
-                >
-                    + Add Problem
-                </button>
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            setSelectedProblem(null);
+                            setOpenModal(true);
+                        }}
+                        className="bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-lg whitespace-nowrap"
+                    >
+                        + Add Problem
+                    </button>
 
                 </div>
 
-                <ProblemTable
-                    problems={filteredProblems}
-                    fetchProblems={fetchProblems}
-                    onEdit={(problem) => {
-                        setSelectedProblem(problem);
-                        setOpenModal(true);
-                    }}
-                />
+                {filteredProblems.length === 0 ? (
+                    <div className="mt-10 bg-[#161B22] border border-[#30363D] rounded-xl p-10 text-center">
+
+                        <h2 className="text-2xl font-semibold mb-2">
+                            📚 No Problems Found
+                        </h2>
+
+                        <p className="text-slate-400 mb-6">
+                            Start tracking your interview preparation by adding your first problem.
+                        </p>
+
+                        <button
+                            onClick={() => {
+                                setSelectedProblem(null);
+                                setOpenModal(true);
+                            }}
+                            className="bg-emerald-500 hover:bg-emerald-600 px-6 py-3 rounded-lg"
+                        >
+                            + Add Your First Problem
+                        </button>
+
+                    </div>
+                ) : (
+                    <ProblemTable
+                        problems={filteredProblems}
+                        fetchProblems={fetchProblems}
+                        onEdit={(problem) => {
+                            setSelectedProblem(problem);
+                            setOpenModal(true);
+                        }}
+                    />
+                )}
                 <ProblemModal
                     isOpen={openModal}
                     problem={selectedProblem}
@@ -301,6 +349,9 @@ export default function Dashboard() {
                     }}
                     onProblemAdded={fetchProblems}
                 />
+                <footer className="text-center text-slate-500 text-sm mt-12 pb-6">
+                    Built with React, Express, MySQL & Tailwind CSS
+                </footer>
             </main>
 
         </div>

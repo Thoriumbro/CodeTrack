@@ -1,5 +1,7 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 import api from "../services/api";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 function getRevisionStatus(revisionDate) {
 
@@ -54,33 +56,42 @@ export default function ProblemTable({
 })  {
     const handleDelete = async (id) => {
 
-    const confirmDelete = window.confirm(
-        "Are you sure you want to delete this problem?"
-    );
+    const result = await Swal.fire({
+        title: "Delete Problem?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dc2626",
+        cancelButtonColor: "#475569",
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        background: "#0f172a",
+        color: "#ffffff"
+    });
 
-    if (!confirmDelete) return;
+    if (!result.isConfirmed) return;
 
     try {
 
         await api.delete(`/problems/${id}`);
-
+        toast.success("Problem deleted!");
         fetchProblems();
 
     } catch (err) {
 
         console.error(err);
-        alert("Delete failed");
+        toast.error("Delete failed");
 
     }};
 
     return (
-        <div className="mt-10 bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <div className="mt-10 bg-[#161B22] rounded-xl border border-slate-800 overflow-hidden">
 
             <div className="overflow-x-auto">
 
                 <table className="w-full min-w-[900px]">
 
-                <thead className="bg-slate-800">
+                <thead className="bg-[#21262D]">
 
                     <tr>
 
@@ -108,7 +119,7 @@ export default function ProblemTable({
 
                         <tr
                             key={problem.id}
-                            className="border-t border-slate-800 hover:bg-slate-800 transition"
+                            className="border-t border-slate-800 hover:bg-[#21262D] transition"
                         >
 
                             <td className="p-4">{problem.title}</td>

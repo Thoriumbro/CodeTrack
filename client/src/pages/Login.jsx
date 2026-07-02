@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../services/api";
 
 export default function Login() {
@@ -32,7 +33,7 @@ export default function Login() {
             navigate("/dashboard");
 
         } catch (err) {
-            alert(err.response?.data?.message || "Login Failed");
+            toast.error("Login failed");
         } finally {
             setLoading(false);
         }
@@ -41,7 +42,7 @@ export default function Login() {
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center">
 
-            <div className="w-full max-w-lg bg-slate-900 rounded-2xl p-8 shadow-2xl">
+            <div className="w-full max-w-lg bg-[#161B22] rounded-2xl p-8 shadow-2xl">
 
                 <h1 className="text-3xl font-bold text-white text-center">
                     Interview Prep Tracker
@@ -60,7 +61,7 @@ export default function Login() {
                         type="email"
                         name="email"
                         placeholder="Email"
-                        className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 rounded-lg bg-[#21262D] border border-slate-700 text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-blue-500"
                         value={form.email}
                         onChange={handleChange}
                     />
@@ -69,13 +70,13 @@ export default function Login() {
                         type="password"
                         name="password"
                         placeholder="Password"
-                        className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 rounded-lg bg-[#21262D] border border-slate-700 text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-blue-500"
                         value={form.password}
                         onChange={handleChange}
                     />
 
                     <button
-                        className="w-full bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all duration-200 text-white p-3 rounded-lg"
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 hover:scale-[1.02] transition-all duration-200 text-white p-3 rounded-lg"
                     >
                         {loading ? "Logging in..." : "Login"}
                     </button>

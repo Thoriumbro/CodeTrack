@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
 export default function ProblemModal({
     isOpen,
@@ -49,12 +50,13 @@ export default function ProblemModal({
             }
 
             onProblemAdded();
+            toast.success(
+                problem ? "Problem updated!" : "Problem added!"
+            );
             onClose();
 
         } catch (err) {
-            console.log(err.response);
-            console.log(err.response?.data);
-            alert(err.response?.data?.message || "Couldn't add problem");
+            toast.error(err.response?.data?.message || "Couldn't save problem");
         }
 
     };
